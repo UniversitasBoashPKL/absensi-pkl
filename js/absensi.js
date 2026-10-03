@@ -57,7 +57,7 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
 
   function kirimKeSheet(fotoKecil) {
   const reader = new FileReader();
-  reader.onload = function (ev) {
+  reader.onload = async function (ev) {
     const data = JSON.parse(localStorage.getItem('absensiPKL') || '[]');
     const now = new Date();
     data.push({
@@ -68,23 +68,14 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
     });
     localStorage.setItem('absensiPKL', JSON.stringify(data));
 
-    // Kirim data absensi ke email admin via FormSubmit
-    const fd = new FormData();
-    fd.append('nama', nama);
-    fd.append('sekolah', sekolah);
-    fd.append('status', jenis);
-    fd.append('waktu', now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID'));
-    fd.append('lokasi', lokasi ? lokasi.lat + ',' + lokasi.lng : 'Tidak ada');
-    fd.append('_subject', 'Absensi PKL: ' + nama + ' - ' + jenis);
-    fd.append('_captcha', 'false');
-    fd.append('_template', 'table');
-    if (foto) fd.append('attachment', foto);
-
-    fetch('https://formsubmit.co/ajax/pklboashpoliteknik@gmail.com', {
-      method: 'POST',
-      headers: { 'Accept': 'application/json' },
-      body: fd
-    }).then(r => r.json()).then(() => console.log('Terkirim ke email admin')).catch(() => console.log('Gagal kirim email'));
+    // Simpan ke Firestore (data admin)
+    try {
+      await db.collection('absensi').add({
+        nama, sekolah, status: jenis, waktu: now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID'),
+        lokasi: lokasi ? lokasi.lat + ',' + lokasi.lng : '',
+        foto: fotoKecil, dibuat: new Date()
+      });
+    } catch (e) { console.log('Gagal simpan ke Firebase', e); }
 
     alert('Absensi ' + jenis + ' berhasil disimpan & dikirim ke admin!');
     window.location.href = 'index.html';
