@@ -76,7 +76,7 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
     }).catch(() => console.log('Gagal kirim ke sheet'));
 
     alert('Absensi ' + jenis + ' berhasil disimpan!');
-    window.location.href = 'rekap.html';
+    window.location.href = 'index.html';
   };
   reader.readAsDataURL(foto);
   }
