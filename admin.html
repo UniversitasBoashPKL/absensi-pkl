@@ -16,7 +16,7 @@
     <a href="admin.html">Admin</a>
   </nav>
 </header>
-<main>
+<main id="kontenAdmin" style="display:none">
   <h2>Data Absensi Siswa PKL</h2>
   <button id="refresh">🔄 Muat Ulang Data</button>
   <table>
@@ -26,9 +26,27 @@
     <tbody id="tabelAdmin"></tbody>
   </table>
 </main>
+<div id="kunci" style="max-width:500px;margin:50px auto;background:#fff;padding:30px;border-radius:12px;text-align:center;box-shadow:0 4px 15px rgba(0,0,0,0.12)">
+  <h2>🔒 Area Admin</h2>
+  <p>Masukkan password untuk melihat data absensi siswa.</p>
+  <input type="password" id="passwordAdmin" placeholder="Password admin">
+  <button id="btnMasuk">Masuk</button>
+  <p id="salah" style="color:#c0392b;display:none">Password salah!</p>
+</div>
 <footer>Sistem Absensi Jam Kerja PKL &copy; 2026</footer>
 <script src="js/config.js"></script>
 <script>
+const PASSWORD_ADMIN = 'admin2026';
+document.getElementById('btnMasuk').addEventListener('click', function () {
+  if (document.getElementById('passwordAdmin').value === PASSWORD_ADMIN) {
+    document.getElementById('kunci').style.display = 'none';
+    document.getElementById('kontenAdmin').style.display = 'block';
+    muat();
+  } else {
+    document.getElementById('salah').style.display = 'block';
+  }
+});
+
 async function muat() {
   const tbody = document.getElementById('tabelAdmin');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Memuat data...</td></tr>';
@@ -55,7 +73,6 @@ async function muat() {
   }
 }
 document.getElementById('refresh').addEventListener('click', muat);
-window.addEventListener('load', muat);
 </script>
 </body>
 </html>
