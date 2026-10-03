@@ -15,9 +15,20 @@ if (data.length === 0) {
     </tr>`;
   });
 }
-document.getElementById('hapus').addEventListener('click', function () {
-  if (confirm('Yakin ingin menghapus semua data?')) {
-    localStorage.removeItem('absensiPKL');
-    location.reload();
-  }
+document.getElementById('ekspor').addEventListener('click', function () {
+  const data = JSON.parse(localStorage.getItem('absensiPKL') || '[]');
+  if (data.length === 0) { alert('Belum ada data untuk diekspor.'); return; }
+  const rows = data.map((d, i) => ({
+    No: i + 1,
+    'Nama Siswa': d.nama,
+    'Asal Sekolah': d.sekolah,
+    Status: d.jenis,
+    Waktu: d.waktu,
+    'Lokasi (GPS)': d.lokasi || '-'
+  }));
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols'] = [{ wch: 5 }, { wch: 25 }, { wch: 25 }, { wch: 10 }, { wch: 20 }, { wch: 20 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Rekap Absensi');
+  XLSX.writeFile(wb, 'Rekap_Absensi_PKL.xlsx');
 });
