@@ -51,8 +51,9 @@ async function muat() {
   const tbody = document.getElementById('tabelAdmin');
   tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Memuat data...</td></tr>';
   try {
-    const res = await fetch(WEB_APP_URL);
-    const rows = await res.json();
+    const res = await fetch(WEB_APP_URL + '?callback=jsonp', { mode: 'cors' });
+    const text = await res.text();
+    const rows = JSON.parse(text.replace(/^[^\(]+\(/, '').replace(/\);?$/, ''));
     tbody.innerHTML = rows.length === 0
       ? '<tr><td colspan="8" style="text-align:center">Belum ada data.</td></tr>'
       : '';
