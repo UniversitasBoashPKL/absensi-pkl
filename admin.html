@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Data Absensi PKL</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1>Halaman Admin — Data Absensi Masuk</h1>
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="absensi.html">Absensi</a>
+    <a href="sekolah.html">Daftar Sekolah</a>
+    <a href="rekap.html">Rekap (Lokal)</a>
+    <a href="admin.html">Admin</a>
+  </nav>
+</header>
+<main>
+  <h2>Data Absensi Siswa PKL</h2>
+  <button id="refresh">🔄 Muat Ulang Data</button>
+  <table>
+    <thead>
+      <tr><th>No</th><th>Waktu Server</th><th>Nama Siswa</th><th>Asal Sekolah</th><th>Status</th><th>Waktu Lokal</th><th>Lokasi</th><th>Foto</th></tr>
+    </thead>
+    <tbody id="tabelAdmin"></tbody>
+  </table>
+</main>
+<footer>Sistem Absensi Jam Kerja PKL &copy; 2026</footer>
+<script src="js/config.js"></script>
+<script>
+async function muat() {
+  const tbody = document.getElementById('tabelAdmin');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Memuat data...</td></tr>';
+  try {
+    const res = await fetch(WEB_APP_URL);
+    const rows = await res.json();
+    tbody.innerHTML = rows.length === 0
+      ? '<tr><td colspan="8" style="text-align:center">Belum ada data.</td></tr>'
+      : '';
+    rows.forEach((r, i) => {
+      tbody.innerHTML += `<tr>
+        <td>${i + 1}</td>
+        <td>${r[0]}</td>
+        <td>${r[1]}</td>
+        <td>${r[2]}</td>
+        <td>${r[3]}</td>
+        <td>${r[4]}</td>
+        <td>${r[5] ? '<a href="https://www.google.com/maps?q=' + r[5].replace(',', ',') + '" target="_blank">📍 Maps</a>' : '-'}</td>
+        <td>${r[6] ? '<img class="thumb" src="' + r[6] + '">' : '-'}</td>
+      </tr>`;
+    });
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Gagal memuat. Cek WEB_APP_URL.</td></tr>';
+  }
+}
+document.getElementById('refresh').addEventListener('click', muat);
+window.addEventListener('load', muat);
+</script>
+</body>
+</html>

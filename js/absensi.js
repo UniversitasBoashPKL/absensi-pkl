@@ -42,6 +42,20 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
 
   if (!nama || !sekolah || !jenis || !foto) { alert('Semua data wajib diisi!'); return; }
 
+  const img = new Image();
+  img.onload = function () {
+    const canvas = document.createElement('canvas');
+    const max = 320;
+    let w = img.width, h = img.height;
+    if (w > max) { h = h * max / w; w = max; }
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    const fotoKecil = canvas.toDataURL('image/jpeg', 0.5);
+    kirimKeSheet(fotoKecil);
+  };
+  img.src = URL.createObjectURL(foto);
+
+  function kirimKeSheet(fotoKecil) {
   const reader = new FileReader();
   reader.onload = function (ev) {
     const data = JSON.parse(localStorage.getItem('absensiPKL') || '[]');
@@ -53,8 +67,17 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
       lokasi: lokasi ? lokasi.lat + ',' + lokasi.lng : ''
     });
     localStorage.setItem('absensiPKL', JSON.stringify(data));
+
+    // Kirim juga ke Google Sheets (data admin)
+    fetch(WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ nama, sekolah, jenis, waktu: now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID'), lokasi: lokasi ? lokasi.lat + ',' + lokasi.lng : '', foto: fotoKecil })
+    }).catch(() => console.log('Gagal kirim ke sheet'));
+
     alert('Absensi ' + jenis + ' berhasil disimpan!');
     window.location.href = 'rekap.html';
   };
   reader.readAsDataURL(foto);
+  }
 });
