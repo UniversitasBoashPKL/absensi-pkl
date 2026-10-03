@@ -12,7 +12,7 @@
     <a href="index.html">Beranda</a>
     <a href="absensi.html">Absensi</a>
     <a href="sekolah.html">Daftar Sekolah</a>
-
+    <a href="admin.html">Admin</a>
   </nav>
 </header>
 <main>
@@ -22,7 +22,24 @@
     <a href="absensi.html">📝 Isi Absensi</a>
     <a href="sekolah.html">🏫 Daftar Sekolah</a>
   </div>
+
+  <div id="gSignIn" style="margin:20px 0;"></div>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script>
+    window.addEventListener('load', function () {
+      if (!localStorage.getItem('userEmail')) {
+        google.accounts.id.initialize({
+          client_id: 'ISI_CLIENT_ID_ANDA.apps.googleusercontent.com',
+          callback: handleCredentialResponse
+        });
+        google.accounts.id.renderButton(document.getElementById('gSignIn'), {
+          theme: 'outline', size: 'large', text: 'signin_with', shape: 'pill'
+        });
+      }
+    });
+  </script>
 </main>
 <footer>Sistem Absensi Jam Kerja PKL &copy; 2026</footer>
+<script src="js/auth.js"></script>
 </body>
 </html>
