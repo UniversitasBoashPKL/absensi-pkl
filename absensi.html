@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Absensi - Absensi PKL</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <h1>Form Absensi PKL</h1>
+  <nav>
+    <a href="index.html">Beranda</a>
+    <a href="absensi.html">Absensi</a>
+    <a href="sekolah.html">Daftar Sekolah</a>
+    <a href="rekap.html">Rekap Absensi</a>
+  </nav>
+</header>
+<main>
+  <h2>Isi Absensi</h2>
+  <form id="formAbsen">
+    <label for="nama">Nama Siswa</label>
+    <input type="text" id="nama" placeholder="Masukkan nama siswa" required>
+
+    <label for="sekolah">Asal Sekolah</label>
+    <select id="sekolah" required>
+      <option value="">-- Pilih Sekolah --</option>
+      <option>SMK INFOKOM</option>
+      <option>SMK BOASH 1</option>
+      <option>SMK AVICENNA MANDIRI</option>
+      <option>SMK BARU</option>
+      <option>SMK PEMBINA BANGSA 1</option>
+      <option>SMK PEMBINA BANGSA 2</option>
+    </select>
+
+    <label>Jenis Absensi</label>
+    <input type="radio" name="jenis" value="Masuk" required> Masuk
+    <input type="radio" name="jenis" value="Pulang"> Pulang
+
+    <label for="foto">Upload Foto Bukti Kehadiran</label>
+    <input type="file" id="foto" accept="image/*" required>
+    <img id="preview" alt="Preview foto">
+
+    <button type="submit">Kirim Absensi</button>
+  </form>
+</main>
+<footer>Sistem Absensi Jam Kerja PKL &copy; 2026</footer>
+<script src="js/absensi.js"></script>
+</body>
+</html>
