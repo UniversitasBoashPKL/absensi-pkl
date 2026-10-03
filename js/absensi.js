@@ -20,6 +20,19 @@ document.getElementById('foto').addEventListener('change', function () {
   reader.readAsDataURL(file);
 });
 
+let lokasi = null;
+document.getElementById('btnLokasi').addEventListener('click', function () {
+  if (!navigator.geolocation) { alert('Browser tidak mendukung GPS'); return; }
+  document.getElementById('statusLokasi').innerText = 'Mengambil lokasi...';
+  navigator.geolocation.getCurrentPosition(function (pos) {
+    lokasi = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+    document.getElementById('statusLokasi').innerText =
+      'Lokasi terambil: ' + lokasi.lat.toFixed(5) + ', ' + lokasi.lng.toFixed(5);
+  }, function () {
+    document.getElementById('statusLokasi').innerText = 'Gagal mengambil lokasi. Izinkan akses lokasi di browser.';
+  });
+});
+
 document.getElementById('formAbsen').addEventListener('submit', function (e) {
   e.preventDefault();
   const nama = document.getElementById('nama').value.trim();
@@ -36,7 +49,8 @@ document.getElementById('formAbsen').addEventListener('submit', function (e) {
     data.push({
       nama, sekolah, jenis,
       waktu: now.toLocaleDateString('id-ID') + ' ' + now.toLocaleTimeString('id-ID'),
-      foto: ev.target.result
+      foto: ev.target.result,
+      lokasi: lokasi ? lokasi.lat + ',' + lokasi.lng : ''
     });
     localStorage.setItem('absensiPKL', JSON.stringify(data));
     alert('Absensi ' + jenis + ' berhasil disimpan!');
